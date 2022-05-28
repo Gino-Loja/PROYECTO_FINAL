@@ -266,7 +266,7 @@ class Ventana:
         anchor = CENTER
 
         )
-
+        #j
         #############################################
         direccion = f'{self.path_desktop}/Fotos2'
         btn2_eliminar = customtkinter.CTkButton(self.frameMenu,
