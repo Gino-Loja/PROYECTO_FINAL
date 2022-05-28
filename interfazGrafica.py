@@ -1,4 +1,5 @@
 from tkinter import *
+import customtkinter
 import time
 import os
 import cv2
@@ -19,17 +20,14 @@ print(
 
 
 class ReconocerMultiple:
-    def __init__(self,lista,lista2,lista3,camara = 0):
+    def __init__(self,camara = 0):
 
         #----importamos los nombres de las carpetas----
         self.camara = camara
         self.detector = mp.solutions.face_detection #Detector
         self.dibujo = mp.solutions.drawing_utils #funcion de Dibujo
-        self.lista = lista3
-        self.lisdire = lista2
-        self.lis = lista
         self.cap = None
-        self.si = self.encenderCamara()
+
 
     def encenderCamara(self):
         if self.cap == None:
@@ -39,8 +37,11 @@ class ReconocerMultiple:
             return False
         else: return True
 
-    def inicioReconocer(self):
-
+    def inicioReconocer(self,lista,lista2,lista3):
+        self.si = self.encenderCamara()
+        self.lista = lista3
+        self.lisdire = lista2
+        self.lis = lista
         n = 0
         l = []
         #----Inicializamos los parametros de la deteccion----
@@ -130,28 +131,39 @@ class ReconocerMultiple:
                 return frame,self.cap
         else: return 1, self.cap.isOpened()
 
-
-
  # root is your root window
 
-class Ventana:
 
+class Ventana:
+    ANCHO = 980
+    ALTO = 520
     def __init__(self,ini):
+        customtkinter.set_appearance_mode("dark")
+
+        #customtkinter.set_appearance_mode("System")
 
         self.ven = ini
+
         self.path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
         self.var = None
         self.captura = None
         self.variable = None
         self.cambio = True
         self.camaraCambio = IntVar()
-        self.ven.resizable(0, 0)
+        self.FRAME2 = BooleanVar()
+        self.reconocimientoMultiple = ReconocerMultiple()
+        #self.ven.resizable(0, 0)
+        self.ven.geometry(f"{self.ANCHO}x{self.ALTO}")
+        self.listaframe = []
 
         self.img_dir = self.resource_path("img")
         #self.etiqueta = Label(self.ven)
         self.ven.title('Reconocimiento Facial')  # esta linea se agrego luego
+        self.ven.columnconfigure(1, weight=1)
+        self.ven.rowconfigure(0, weight=1)
         #self.ven.iconbitmap(r'icono\favicon.ico')
         self.botones()
+
         self.ven.mainloop()
 
 
@@ -184,87 +196,99 @@ class Ventana:
 
     #def cambiarValor(self):
         #print(self.camaraCambio.get())
-
+    #   Inicio
     def botones(self):
         if self.captura != None:
 
             self.captura.release()
             self.prueba.destroy()
         #self.etiqueta.destroy()
-        self.ven.protocol('WM_DELETE_WINDOW',lambda: self.ven.destroy())
-        self.ven.geometry('520x350')
-        self.cero = Frame(self.ven,bg="sky blue")
-        self.cero.place( relwidth = 1, relheight = 1)
-        self.cambio = True
-        #self.cero.place(relwidth=1, relheight=1)
+
+
+        if self.FRAME2.get() == True:
+            self.primer.destroy()
+        else:
+            self.FRAME2.set(False)
 
         self.menuPrincipal()
+        self.ven.protocol('WM_DELETE_WINDOW',lambda: self.ven.destroy())
+        #self.ven.geometry('520x350')
 
-        btn3_mostarr = Button(self.cero,font = 'Fixedsys',text="Menu",bg= "yellow",command = lambda:self.cambiarTamanio()).grid(
-        row=0,
-        column=0)
+        self.cero = customtkinter.CTkFrame(self.ven)
+        self.cero.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
 
-        txt = Label(self.cero,text= 'SISTEMA DE RECOCIMIENTO FACIAL Y DETECCION DE MASCARILLAS',
-        bg="sky blue",
-        font = 'Fixedsys').grid(
+
+        #self.cero.place(relwidth=1, relheight=1)
+
+
+        # btn3_mostarr = customtkinter.CTkButton(self.cero,text="Menu",
+        # command = lambda:self.cambiarTamanio()).grid(
+        # row=0,
+        # padx=1,
+        # column=0)
+
+        txt = customtkinter.CTkLabel(self.cero,
+        text= 'SISTEMA DE RECOCIMIENTO\n FACIAL Y DETECCION DE MASCARILLAS'
+        ).grid(
         row=0,
         column=1,
-        padx=10,
+        padx=5,
         pady=10)
         self.listaOpciones()
         im = self.img_dir+"\imagen1.png"
 
-        self.imagen= PhotoImage(file = im)
-        Label(self.ven,image=self.imagen).place(x=150,y=80)
+        # self.imagen= PhotoImage(file = im)
+        # Label(self.ven,image=self.imagen).place(x=250,y=80)
 
     def menuPrincipal(self):
 
-        self.frameMenu = Frame(self.ven,bg = 'steel blue',width = 0,height = 300 )
-        self.frameMenu.place(x = 0 , y = 35)
+        self.frameMenu = customtkinter.CTkFrame(self.ven,
+        corner_radius=15)
+
+        self.frameMenu.grid(row=0, column=0, sticky="nswe", padx=20, pady=20)
+
+        self.listaframe.append(self.frameMenu)
         #self.cero.config(bg="blue violet")
-        btn1_mostrar = Button(self.frameMenu, text="Agregar Usuario",bg= "yellow",font = 'Fixedsys',
-        command = lambda:self.asignarNombre()).place(
-        x = 5,
-        y = 10,
+        textMenu = customtkinter.CTkLabel(master=self.frameMenu,
+        text = 'Menu',
+        fg_color=("white", "gray1"))
+        textMenu.place(
+        relx=0.5, rely=0.2,
+        anchor = CENTER
+        )
+
+        btn1_mostrar = customtkinter.CTkButton(self.frameMenu,
+        text="Agregar Usuario",
+        fg_color=("gray75", "gray30"),
+        command = lambda:self.asignarNombre())
+        btn1_mostrar.place(
+        relx=0.5, rely=0.4,
+        anchor = CENTER
+
         )
 
         #############################################
         direccion = f'{self.path_desktop}/Fotos2'
-        btn2_eliminar = Button(self.frameMenu, text="Reconocer",bg= "yellow",font = 'Fixedsys',
+        btn2_eliminar = customtkinter.CTkButton(self.frameMenu,
+        text="Reconocer",
+        fg_color=("gray75", "gray30"),
         command = lambda:self.reconocerNombre() if os.path.exists(direccion) else
         tkinter.messagebox.showinfo("Mensaje:","¡No existe ningun Usuario!")
-        ).place(
-        x = 5,
-        y = 45)
+        )
+        btn2_eliminar.place(
+        relx=0.5, rely=0.6,
+        anchor = CENTER)
 
-        btn3_mostrarMultiple = Button(self.frameMenu, text="Reconocimiento \nMultiple",bg= "yellow",font = 'Fixedsys',
+        btn3_mostrarMultiple = customtkinter.CTkButton(self.frameMenu,
+         text="Reconocimiento \nMultiple",
+         fg_color=("gray75", "gray30"),
         command = lambda:self.reconocerMultiple() if os.path.exists(direccion) else
-        tkinter.messagebox.showinfo("Mensaje:","¡No existe ningun Usuario!")).place(
-        x = 5,
-        y = 80,
+        tkinter.messagebox.showinfo("Mensaje:","¡No existe ningun Usuario!"))
+        btn3_mostrarMultiple.place(
+        relx=0.5, rely=0.8,
+        anchor = CENTER
         )
 
-    def cambiarTamanio(self):
-
-        if self.cambio:
-
-            for i in range(0,150,5):
-                self.frameMenu.update()
-                time.sleep(0.01)
-                self.frameMenu.config(width = i)
-            self.cambio = False
-        else :
-            for z in range(150,0,-5):
-                time.sleep(0.01)
-
-                self.frameMenu.update()
-                self.frameMenu.config(width = z)
-
-            self.cambio = True
-        i = 0
-        z = 0
-        #self.cambio = True
-    #funcion agregar Usuario
     def agregar(self,nombre,mascarilla):
         #self.var = False
         self.controlSalir()
@@ -274,11 +298,12 @@ class Ventana:
         Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
         self.objeto = Video
         self.botonPrueba()
+
     # elemetos de la interfaz
     def listaOpciones(self):
 
 
-        self.barraMenu = Menu(self.ven)
+        self.barraMenu = Menu(self.ven,background='blue',fg='blue')
         self.ven.config(menu = self.barraMenu,height = 300)
         #a.config(bg = "purple"
         menuAyuda = Menu(self.barraMenu,tearoff=0)
@@ -356,34 +381,119 @@ class Ventana:
         self.mpb["value"]  = 0
 
     #funciones para guardar nombres
+    #==============
+    #self.FRAME2 = self.primer
+    #=============
     def asignarNombre(self):
-        self.ven.geometry('300x300')
+
+
+
+        self.cero.destroy()
         self.frameMenu.destroy()
+        # for i in self.listaframe:
+        #
+        #     i.destroy()
+
+        # self.ven.grid_columnconfigure(0, weight=1)
+
+        self.FRAME2.set(True)
+
         con = '_sin_mascarilla'
-        self.primer = Frame(self.ven,bg="sky blue")
-        self.primer.place(relwidth=1, relheight=1)
+
+        self.primer = customtkinter.CTkFrame(self.ven)
+        self.primer.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
+        self.primer.rowconfigure((0,1,2,3,4), weight=1)
+        self.primer.columnconfigure(1, weight=1)
+
         #self.variable = None
-        self.nombre = Entry(self.primer,font = 'Fixedsys')
+        self.nombre = customtkinter.CTkEntry(self.primer,width=200)
         self.nombre.grid(
-        row=1,
-        column=2,
-        pady=15)
-        ###################
-        self.txt = Label(self.primer,text = 'nombre: ',bg="sky blue",font = 'Fixedsys')
-        self.txt.grid(
+        row=0,
+        column=1,
+        padx=15,
+        pady=15,
+        sticky="we"
+        )
+        nombre2 = customtkinter.CTkEntry(self.primer,width=200)
+        nombre2.grid(
         row=1,
         column=1,
         padx=15,
-        pady=15
+        pady=15,
+        sticky="we"
+        )
+        nombre3 = customtkinter.CTkEntry(self.primer,width=200)
+        nombre3.grid(
+        row=2,
+        column=1,
+        padx=15,
+        pady=15,
+        sticky="we"
+        )
+        nombre4 = customtkinter.CTkEntry(self.primer,width=200)
+        nombre4.grid(
+        row=3,
+        column=1,
+        padx=15,
+        pady=15,
+        sticky="we"
+        )
+
+        ###################
+        self.txt = customtkinter.CTkLabel(self.primer,text = 'nombre: ',width = 55)
+        self.txt.grid(
+        row=0,
+        column=0,
+        padx=15,
+        pady=15,
+        sticky="we"
+        )
+        txt2 = customtkinter.CTkLabel(self.primer,text = 'clave: ',width = 55)
+        txt2.grid(
+        row=1,
+        column=0,
+        padx=15,
+        pady=15,
+        sticky="we"
+        )
+        txt3 = customtkinter.CTkLabel(self.primer,text = 'otro valor: ',width = 55)
+        txt3.grid(
+        row=2,
+        column=0,
+        padx=15,
+        pady=15,
+        sticky="we"
+        )
+        txt4 = customtkinter.CTkLabel(self.primer,text = 'otro valor2: ',width = 55)
+        txt4.grid(
+        row=3,
+        column=0,
+        padx=15,
+        pady=15,
+        sticky="we"
         )
         #result = self.nombre.get()
-        self.btn1_mostrar = Button(self.primer,bg = 'yellow' ,activebackground ="yellow",text="Guardar",font = 'Fixedsys',
+        self.btn1_mostrar = customtkinter.CTkButton(self.primer,
+        text="Guardar",
         command = lambda:self.agregar(self.nombre.get(),con) if (self.usuarioExistente(self.nombre.get(),True) == False)
         else 1)
         self.btn1_mostrar.grid(
-        row=2,
-        column=2,
-        sticky = 'E'
+        row=4,
+        column=1,
+        padx=15,
+        pady=15,
+        sticky="e"
+
+        )
+        self.inicio_ = customtkinter.CTkButton(self.primer,
+        text="Inicio",
+        command = lambda:self.botones())
+        self.inicio_.grid(
+        row=4,
+        column=0,
+        padx=15,
+        pady=15,
+        sticky="n"
         )
 
     def usuarioExistente(self,nombre,valor):
@@ -437,8 +547,9 @@ class Ventana:
         self.cero.destroy()
         self.frameMenu.destroy()
         self.ven.geometry('380x300')
-        self.tercer = Frame(self.ven,bg="sky blue")
-        self.tercer.place(relwidth=1, relheight=1)
+
+        self.tercer = customtkinter.CTkFrame(self.ven)
+        self.tercer.pack(pady=20, padx=60, fill="both", expand=True)
         self.n = True
         #self.list = ''
         self.scrolbar(self.tercer)
@@ -486,7 +597,7 @@ class Ventana:
 
     # (muestra el Frame de la camera) = funcion(show_vid)
     def botonPrueba(self):
-        self.cero.destroy()#cambio aquii
+        #self.cero.destroy()#cambio aquii
         self.prueba = Frame(self.ven,bg="sky blue")
         self.prueba.place(relwidth=1, relheight=1)
         self.lmain = Label(master=self.prueba)
@@ -609,7 +720,9 @@ class Ventana:
             del m
 
         #info,lisdire
-        self.reconocerxfat32(ReconocerMultiple(info,lisdire,lista,self.camaraCambio.get()))
+        #ReconocerMultiple(info,lisdire,lista,self.camaraCambio.get())
+        self.reconocimientoMultiple.camara = self.camaraCambio.get()
+        self.reconocerxfat32(lambda:self.reconocimientoMultiple.inicioReconocer(info,lisdire,lista))
 
     def show_vid(self):
         #cap = cv2.VideoCapture(0)
@@ -662,14 +775,10 @@ class Ventana:
                 if c == 'ok':
                     self.botones()
 
-
-
-
-
         else:
             self.mpb.destroy()
             self.textobar.destroy()
-            frame,cap  = self.objeto.inicioReconocer()
+            frame,cap  = self.objeto()
             #print(frame)
             if cap != False :
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -739,4 +848,4 @@ class Ventana:
 
 
 
-Ventana = Ventana(Tk())
+Ventana = Ventana(customtkinter.CTk())
