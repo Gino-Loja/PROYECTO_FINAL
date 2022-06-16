@@ -1,5 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
-git config pull.ff true
+
 
 

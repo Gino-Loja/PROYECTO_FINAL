@@ -14,7 +14,7 @@ adquiera una PC cuyo valor sea mayor a $500.
 5.Mostrar la lista de computadoras de marca INTEL
 
 6.Mensaje de salida.
-COMPUTADORA (Id_computadora, marca, modelo, precio)
+COMPUTADORA (Id_cputadora, marca, modelo, precio)
 
 CLIENTE(Id, Nombre, Apellido, Descripción )
 

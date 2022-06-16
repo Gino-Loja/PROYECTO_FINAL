@@ -47,7 +47,9 @@ class Reconocer:
 
                     #Lectura de VideoCaptura
                 ret, frame = self.cap.read()
+
                 copia = frame.copy()
+
 
                 #Eliminar el error de espejo
                 frame = cv2.flip(copia, 1)
