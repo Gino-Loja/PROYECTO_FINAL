@@ -14,7 +14,7 @@ import tkinter.messagebox
 print(
     '(;'
     "\n"
-    'creado por: GINO'
+    'Tania Boba'
 )
 
 
