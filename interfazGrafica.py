@@ -14,7 +14,7 @@ import tkinter.messagebox
 print(
     '(;'
     "\n"
-    'creado por: '
+    'creado por: GINO'
 )
 
 
@@ -130,9 +130,6 @@ class ReconocerMultiple:
                 return frame,self.cap
         else: return 1, self.cap.isOpened()
 
- # root is your root window
-
-
 class Ventana:
 
     ANCHO = 720
@@ -144,7 +141,8 @@ class Ventana:
         self.var = None
         self.captura = None
         self.variable = None
-        self.cambio = True
+        #self.cambio = True
+        self.CAMBIO = False
         self.camaraCambio = IntVar()
         self.switch = IntVar()
         self.FRAME2 = BooleanVar()
@@ -214,14 +212,46 @@ class Ventana:
 
         self.cero = customtkinter.CTkFrame(self.ven)
         self.cero.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
+        self.cero.rowconfigure((0,1,2), weight=1)
+        self.cero.columnconfigure((0,1), weight=1)
+
+        frameHijo = customtkinter.CTkFrame(self.cero)
+        frameHijo.grid(column = 1, row = 1, sticky="nswe",padx=20)
+        frameHijo.rowconfigure((0,1,2), weight=1)
+        frameHijo.columnconfigure((0), weight=1)
 
         txt = customtkinter.CTkLabel(self.cero,
         text= 'SISTEMA DE RECOCIMIENTO\n FACIAL Y DETECCION DE MASCARILLAS'
         ).grid(
         row=0,
-        column=1,
+        column=0,
+        columnspan = 2,
+        sticky="n",
         padx=5,
         pady=10)
+
+        txt2 = customtkinter.CTkLabel(frameHijo,
+        text = "Habilitar camara:").grid(column = 0,
+        padx=5,
+        pady=10,
+        row = 0)
+
+        radiobutton_1 = customtkinter.CTkRadioButton(master=frameHijo, text="Interna",
+        variable= self.camaraCambio, value=0)
+        radiobutton_2 = customtkinter.CTkRadioButton(master=frameHijo, text="Externa",
+        variable= self.camaraCambio, value=1)
+        radiobutton_1.grid(column = 0, row = 1,
+        padx=5,
+        pady=15)
+        radiobutton_2.grid(column = 0, row = 2,padx=5,
+        pady=15)
+
+
+
+
+
+
+
         self.listaOpciones()
         im = self.img_dir+"\imagen1.png"
         self.switch_2 = customtkinter.CTkSwitch(master=self.cero,
@@ -230,13 +260,6 @@ class Ventana:
                                                 command=self.change_mode)
         self.switch_2.grid(row=10, column=0, pady=10, padx=20, sticky="w")
         self.switch_2.select() if self.switch.get() == 1 else self.switch_2.deselect()
-        # if self.switch_2.get() == 1:
-        #     # self.switch_2.toggle()
-        #     self.switch_2.select()
-        #     print(self.switch_2.get(),'wesss')
-        # self.switch_2.select()
-        # self.imagen= PhotoImage(file = im)
-        # Label(self.ven,image=self.imagen).place(x=250,y=80)
 
     def change_mode(self):
         if self.switch_2.get() == 1:
@@ -381,15 +404,11 @@ class Ventana:
     #self.FRAME2 = self.primer
     #=============
     def asignarNombre(self):
+        self.captura  = None
         #print(self.switch_2.get(),'fe w')
         self.switch.set(self.switch_2.get())
         self.cero.destroy()
         self.frameMenu.destroy()
-        # for i in self.listaframe:
-        #
-        #     i.destroy()
-
-        # self.ven.grid_columnconfigure(0, weight=1)
 
         self.FRAME2.set(True)
 
@@ -541,6 +560,7 @@ class Ventana:
         #self.var = False
 
     def reconocerNombre(self):
+        self.captura  = None
         self.switch.set(self.switch_2.get())
         self.cero.destroy()
         self.frameMenu.destroy()
@@ -627,7 +647,7 @@ class Ventana:
             self.btnsalir = customtkinter.CTkButton(self.prueba,text = 'salir', command = lambda:self.botones())
             self.btnsalir.grid(
             row=1,
-            column=2,
+            column=0,
             padx=10,
             pady=10)
         self.barraProgreso(self.prueba)
@@ -640,6 +660,7 @@ class Ventana:
         #self.UsuarioMascarilla('sdsdsdsd')
     # guardar Modelos
     def guardarModelos(self): # self.var = None
+        self.captura  = None
         self.prueba2 = customtkinter.CTkFrame(self.ven)
         self.prueba2.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
         self.prueba2.rowconfigure((1,2), weight=1)
@@ -800,8 +821,11 @@ class Ventana:
                     self.botones()
 
         else:
-            #self.mpb.destroy()
-            #self.textobar.destroy()
+            if self.CAMBIO != True:
+
+                self.mpb.destroy()
+                self.textobar.destroy()
+                self.CAMBIO = True
             frame,cap  = self.objeto.inicioReconocer()
             #print(frame)
             if cap != False :
@@ -821,8 +845,6 @@ class Ventana:
                 if c == 'ok':
                     #self.btnsalir.destroy()
                     self.botones()
-
-
 
 Ventana = Ventana(customtkinter.CTk())
 Ventana.ven.mainloop()
