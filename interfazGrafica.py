@@ -14,7 +14,7 @@ import tkinter.messagebox
 print(
     '(;'
     "\n"
-    'Tania Boba'
+    'creado por gino'
 )
 
 
@@ -132,11 +132,13 @@ class ReconocerMultiple:
 
 class Ventana:
 
-    ANCHO = 720
-    ALTO = 600
+    ANCHO = 710
+    ALTO = 690
     def __init__(self,ini):
-        customtkinter.set_appearance_mode("dark")
+
         self.ven = ini
+
+
         self.path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
         self.var = None
         self.captura = None
@@ -145,15 +147,18 @@ class Ventana:
         self.CAMBIO = False
         self.camaraCambio = IntVar()
         self.switch = IntVar()
+        self.mini = IntVar()
         self.FRAME2 = BooleanVar()
         self.FRAME3 = BooleanVar()
         self.reconocimientoMultiple = ReconocerMultiple()
         #self.ven.resizable(0, 0)
         self.ven.geometry(f"{self.ANCHO}x{self.ALTO}")
         self.listaframe = []
-
+        customtkinter.set_appearance_mode("dark")
+        #customtkinter.deactivate_automatic_dpi_awareness()
         self.img_dir = self.resource_path("img")
         #self.etiqueta = Label(self.ven)
+        self.ven.bind('<Configure>',lambda a : self.maximizar(a))
         self.ven.title('Reconocimiento Facial')  # esta linea se agrego luego
         self.ven.columnconfigure(1, weight=1)
         self.ven.rowconfigure(0, weight=1)
@@ -191,7 +196,7 @@ class Ventana:
         R2.grid(row = 1,column = 0)
 
     def botones(self):
-
+        #self.ven.bind("<self.state()>",print('sasasas'))
         if self.captura != None:
 
             self.captura.release()
@@ -252,20 +257,47 @@ class Ventana:
 
 
 
-        self.listaOpciones()
+        #self.listaOpciones()
         im = self.img_dir+"\imagen1.png"
-        self.switch_2 = customtkinter.CTkSwitch(master=self.cero,
 
-                                                text="Dark Mode",
-                                                command=self.change_mode)
-        self.switch_2.grid(row=10, column=0, pady=10, padx=20, sticky="w")
-        self.switch_2.select() if self.switch.get() == 1 else self.switch_2.deselect()
+    def maximizar(self,a):
+
+        if self.ven.state() != "zoomed":
+            self.listaframe.append(a)
+            c = len(self.listaframe)
+            self.mini.set(c)
+            print(self.mini.get())
+
+        if self.mini.get() %  2 == 0:
+
+            if self.ven.state() == "zoomed":
+                self.ven.geometry(f"{self.ANCHO}x{self.ALTO}")
+
+                self.listaframe = []
+        if len(self.listaframe) > 300:
+            self.listaframe = []
 
     def change_mode(self):
+
+        WIDTH = self.ven.winfo_width()
+        HEIGHT = self.ven.winfo_height()
+        X_POS = self.ven.winfo_x()
+        Y_POS = self.ven.winfo_y()
+
+        current_state = self.ven.state()
+        print(current_state)
+        self.ven.state('normal')
+
+        self.ven.geometry("%dx%d+%d+%d" % (WIDTH, HEIGHT, X_POS, Y_POS))
+
         if self.switch_2.get() == 1:
             customtkinter.set_appearance_mode("dark")
         else:
             customtkinter.set_appearance_mode("light")
+
+        if current_state == 'zoomed':
+            self.ven.state("zoomed")
+        self.listaframe = []
 
     def menuPrincipal(self):
 
@@ -307,6 +339,16 @@ class Ventana:
         relx=0.5, rely=0.6,
         anchor = CENTER)
 
+        self.switch_2 = customtkinter.CTkSwitch(master=self.frameMenu,
+
+                                                text="Dark Mode",
+                                                command=self.change_mode)
+        self.switch_2.place(
+        relx=0.5, rely=0.93,
+        anchor = CENTER
+        )
+        self.switch_2.select() if self.switch.get() == 1 else self.switch_2.deselect()
+
         # btn3_mostrarMultiple = customtkinter.CTkButton(self.frameMenu,
         #  text="Reconocimiento \nMultiple",
         #  fg_color=("gray75", "gray30"),
@@ -321,7 +363,7 @@ class Ventana:
         #self.var = False
         self.controlSalir()
         #self.ven.geometry('650x540')
-        self.barraMenu.destroy()
+
         self.variable = None
         Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
         self.objeto = Video
@@ -621,7 +663,6 @@ class Ventana:
         )
 
     def reconocerxfat32(self,clase):#self.variable  = True
-        self.barraMenu.destroy()
         self.variable = True
         #recon = pb3.Reconocer(nombre)
         self.objeto = clase
@@ -846,5 +887,9 @@ class Ventana:
                     #self.btnsalir.destroy()
                     self.botones()
 
-Ventana = Ventana(customtkinter.CTk())
-Ventana.ven.mainloop()
+
+
+if __name__ == "__main__":
+    print(__name__)
+    Ventana = Ventana(customtkinter.CTk())
+    Ventana.ven.mainloop()
