@@ -1,3 +1,5 @@
+
+
 import cv2
 import mediapipe as mp
 import os
@@ -92,7 +94,7 @@ class DataBase:
                             #Almacenar nuestras imagenes
                             cv2.imwrite(self.carpeta + "/rostro_{}.jpg".format(self.cont), cara)
                             self.cont = self.cont + 1
-                            #print(self.cont)
+                            
                         except:
                             pass
                 else:

@@ -6,10 +6,12 @@ import cv2
 import sys
 import mediapipe as mp
 from PIL import Image, ImageTk
-import prueba2_0 as pb
-import prueba3_0 as pb3
+import captura_fotos as pb
+import reconocimiento_fotos as pb3
 import pruebaModelo as pM
 import tkinter.messagebox
+
+import dataBase
 
 print(
     '(;'
@@ -137,8 +139,6 @@ class Ventana:
     def __init__(self,ini):
 
         self.ven = ini
-
-
         self.path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
         self.var = None
         self.captura = None
@@ -154,16 +154,17 @@ class Ventana:
         #self.ven.resizable(0, 0)
         self.ven.geometry(f"{self.ANCHO}x{self.ALTO}")
         self.listaframe = []
+        self.listaUser = []
         customtkinter.set_appearance_mode("dark")
         #customtkinter.deactivate_automatic_dpi_awareness()
         self.img_dir = self.resource_path("img")
         #self.etiqueta = Label(self.ven)
         self.ven.bind('<Configure>',lambda a : self.maximizar(a))
-        self.ven.title('Reconocimiento Facial')  # esta linea se agrego luego
+        self.ven.title('Reconocimiento Facial')  # esta linea se agrego luego\
+
         self.ven.columnconfigure(1, weight=1)
         self.ven.rowconfigure(0, weight=1)
         #self.ven.iconbitmap(r'icono\favicon.ico')
-
         self.botones()
         self.switch_2.select()
         #self.ven.mainloop()
@@ -362,8 +363,6 @@ class Ventana:
     def agregar(self,nombre,mascarilla):
         #self.var = False
         self.controlSalir()
-        #self.ven.geometry('650x540')
-
         self.variable = None
         Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
         self.objeto = Video
@@ -458,7 +457,7 @@ class Ventana:
 
         self.primer = customtkinter.CTkFrame(self.ven)
         self.primer.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
-        self.primer.rowconfigure((0,1,2,3,4), weight=1)
+        self.primer.rowconfigure((0,1,2,3,4,5), weight=1)
         self.primer.columnconfigure(1, weight=1)
 
         #self.variable = None
@@ -470,32 +469,41 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        nombre2 = customtkinter.CTkEntry(self.primer,width=200)
-        nombre2.grid(
+
+        self.codigo = customtkinter.CTkEntry(self.primer,width=200)
+        self.codigo.grid(
         row=1,
         column=1,
         padx=15,
         pady=15,
         sticky="we")
 
-        nombre3 = customtkinter.CTkEntry(self.primer,width=200)
-        nombre3.grid(
+        self.correo = customtkinter.CTkEntry(self.primer,width=200)
+        self.correo.grid(
         row=2,
         column=1,
         padx=15,
         pady=15,
         sticky="we")
 
-        nombre4 = customtkinter.CTkEntry(self.primer,width=200)
-        nombre4.grid(
+        self.carr = customtkinter.CTkEntry(self.primer,width=200)
+        self.carr.grid(
         row=3,
         column=1,
         padx=15,
         pady=15,
         sticky="we")
 
+        self.pao = customtkinter.CTkEntry(self.primer,width=50)
+        self.pao.grid(
+        row=4,
+        column=1,
+        padx=15,
+        pady=15,
+        sticky="w")
+
         ###################
-        self.txt = customtkinter.CTkLabel(self.primer,text = 'nombre: ',width = 55)
+        self.txt = customtkinter.CTkLabel(self.primer,text = 'Nombre: ',width = 55)
         self.txt.grid(
         row=0,
         column=0,
@@ -503,7 +511,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt2 = customtkinter.CTkLabel(self.primer,text = 'clave: ',width = 55)
+        txt2 = customtkinter.CTkLabel(self.primer,text = 'Codigo: ',width = 55)
         txt2.grid(
         row=1,
         column=0,
@@ -511,7 +519,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt3 = customtkinter.CTkLabel(self.primer,text = 'otro valor: ',width = 55)
+        txt3 = customtkinter.CTkLabel(self.primer,text = 'Correo: ',width = 55)
         txt3.grid(
         row=2,
         column=0,
@@ -519,13 +527,23 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt4 = customtkinter.CTkLabel(self.primer,text = 'otro valor2: ',width = 55)
+        txt4 = customtkinter.CTkLabel(self.primer,text = 'Carrera: ',width = 55)
         txt4.grid(
         row=3,
         column=0,
         padx=15,
         pady=15,
         sticky="we")
+
+        txt5 = customtkinter.CTkLabel(self.primer,text = 'Pao ',width = 55)
+        txt5.grid(
+        row=4,
+        column=0,
+        padx=15,
+        pady=15,
+        sticky="we")
+
+
         #result = self.nombre.get()
         self.btn1_mostrar = customtkinter.CTkButton(self.primer,
         text="Guardar",
@@ -533,7 +551,7 @@ class Ventana:
         command = lambda:self.agregar(self.nombre.get(),con) if (self.usuarioExistente(self.nombre.get(),True) == False)
         else 1)
         self.btn1_mostrar.grid(
-        row=4,
+        row=5,
         column=1,
         padx=15,
         pady=15,
@@ -542,11 +560,12 @@ class Ventana:
         text="Inicio",
         command = lambda:self.botones())
         self.inicio_.grid(
-        row=4,
+        row=5,
         column=0,
         padx=15,
         pady=15,
         sticky="n")
+
 
     def usuarioExistente(self,nombre,valor):
         direccion  = f'{self.path_desktop}/Fotos2'
@@ -668,7 +687,6 @@ class Ventana:
         self.objeto = clase
         #self.ven.geometry('720x500')
         self.botonPrueba()
-
     # (muestra el Frame de la camera) = funcion(show_vid)
     def botonPrueba(self):
         #self.cero.destroy()#cambio aquii
@@ -820,6 +838,7 @@ class Ventana:
     """
     -----------------------------------
     """
+
     def show_vid(self):
 
         if self.variable != True:
@@ -830,7 +849,7 @@ class Ventana:
                     img = Image.fromarray(frame)
                     imgtk = ImageTk.PhotoImage(image=img)
                     self.lmain.imgtk = imgtk
-                    self.lmain.configure(image=imgtk )
+                    self.lmain.configure(image=imgtk,width=620,height=680 )
                     self.lmain.after(20, self.show_vid)
                     self.prueba.update_idletasks()
                     self.mpb.set(0.004*con)
@@ -845,12 +864,13 @@ class Ventana:
                     if self.var == None:
                         #self.ven.geometry('350x300')
                         self.UsuarioMascarilla(self.nombre.get())
+                        self.var = False
 
                     else:
                         self.segundo.destroy()
                         self.guardarModelos()
 
-                    self.var = False
+
 
 
                         #print(len(self.lista))
@@ -887,9 +907,6 @@ class Ventana:
                     #self.btnsalir.destroy()
                     self.botones()
 
-
-
 if __name__ == "__main__":
-    print(__name__)
     Ventana = Ventana(customtkinter.CTk())
     Ventana.ven.mainloop()
