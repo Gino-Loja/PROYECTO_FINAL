@@ -13,14 +13,14 @@ class Reconocer:
         self.camara = camara
         self.nombre = nombre
         self.path_desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-        self.direccion  = f'{self.path_desktop}/Fotos2/{self.nombre}'
+        self.direccion  = f'{self.path_desktop}/Fotos2/{self.nombre[4]}'
         self.etiquetas = os.listdir(self.direccion)
         print("Nombres: ", self.etiquetas)
 
         #---- Llamar el modelo entrenado----
         self.modelo = cv2.face.LBPHFaceRecognizer_create()
         #Leer el modelo
-        self.modelo.read(f'{self.path_desktop}/Fotos2/DatosModelos/Modelo{self.nombre }.xml')
+        self.modelo.read(f'{self.path_desktop}/Fotos2/DatosModelos/Modelo{self.nombre[4] }.xml')
         #----Declaracion del detector----
         self.detector = mp.solutions.face_detection #Detector
         self.dibujo = mp.solutions.drawing_utils #funcion de Dibujo
@@ -119,6 +119,11 @@ class Reconocer:
                                 elif prediccion[0] == 1:
                                     cv2.putText(frame, '{}'.format(self.etiquetas[1]), (xi, yi - 5), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
                                     cv2.rectangle(frame, (xi, yi), (xf, yf), (0,0,255), 2)
+                                cv2.rectangle(frame, (477, 324) ,(623, 470), (0,0,255), 2)
+                                cv2.putText(frame, self.nombre[0], (xi+50, yi), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+
+
+                                print((xi, yi), (xf, yf))
                         except cv2.error as e:
                             pass
                                 #print(frame.shape)

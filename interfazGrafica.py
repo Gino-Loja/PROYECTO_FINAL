@@ -11,7 +11,7 @@ import reconocimiento_fotos as pb3
 import pruebaModelo as pM
 import tkinter.messagebox
 
-import dataBase
+import dataBase as db
 
 print(
     '(;'
@@ -154,14 +154,14 @@ class Ventana:
         #self.ven.resizable(0, 0)
         self.ven.geometry(f"{self.ANCHO}x{self.ALTO}")
         self.listaframe = []
-        self.listaUser = []
+        self.listaDatos = []
         customtkinter.set_appearance_mode("dark")
         #customtkinter.deactivate_automatic_dpi_awareness()
         self.img_dir = self.resource_path("img")
         #self.etiqueta = Label(self.ven)
         self.ven.bind('<Configure>',lambda a : self.maximizar(a))
         self.ven.title('Reconocimiento Facial')  # esta linea se agrego luego\
-
+        self.guardarDB = db.DB()
         self.ven.columnconfigure(1, weight=1)
         self.ven.rowconfigure(0, weight=1)
         #self.ven.iconbitmap(r'icono\favicon.ico')
@@ -267,7 +267,7 @@ class Ventana:
             self.listaframe.append(a)
             c = len(self.listaframe)
             self.mini.set(c)
-            print(self.mini.get())
+            #print(self.mini.get())
 
         if self.mini.get() %  2 == 0:
 
@@ -275,8 +275,11 @@ class Ventana:
                 self.ven.geometry(f"{self.ANCHO}x{self.ALTO}")
 
                 self.listaframe = []
-        if len(self.listaframe) > 300:
+
+
+        if len(self.listaframe) > 100:
             self.listaframe = []
+
 
     def change_mode(self):
 
@@ -365,8 +368,12 @@ class Ventana:
         self.controlSalir()
         self.variable = None
         Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
+        if len(self.listaDatos)>1:
+            self.guardarDB.guardar(list(map(lambda x : x.get(),self.listaDatos)))
+
         self.objeto = Video
         self.botonPrueba()
+        self.listaDatos = []
 
     def listaOpciones(self):
 
@@ -469,7 +476,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-
+        self.listaDatos.append(self.nombre)
         self.codigo = customtkinter.CTkEntry(self.primer,width=200)
         self.codigo.grid(
         row=1,
@@ -477,6 +484,7 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="we")
+        self.listaDatos.append(self.codigo)
 
         self.correo = customtkinter.CTkEntry(self.primer,width=200)
         self.correo.grid(
@@ -485,7 +493,7 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="we")
-
+        self.listaDatos.append(self.correo)
         self.carr = customtkinter.CTkEntry(self.primer,width=200)
         self.carr.grid(
         row=3,
@@ -493,7 +501,7 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="we")
-
+        self.listaDatos.append(self.carr)
         self.pao = customtkinter.CTkEntry(self.primer,width=50)
         self.pao.grid(
         row=4,
@@ -501,7 +509,7 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="w")
-
+        self.listaDatos.append(self.pao)
         ###################
         self.txt = customtkinter.CTkLabel(self.primer,text = 'Nombre: ',width = 55)
         self.txt.grid(
@@ -545,10 +553,11 @@ class Ventana:
 
 
         #result = self.nombre.get()
+
         self.btn1_mostrar = customtkinter.CTkButton(self.primer,
         text="Guardar",
 
-        command = lambda:self.agregar(self.nombre.get(),con) if (self.usuarioExistente(self.nombre.get(),True) == False)
+        command = lambda:self.agregar(self.nombre.get(),con) if (self.usuarioExistente(self.listaDatos,True) == False)
         else 1)
         self.btn1_mostrar.grid(
         row=5,
@@ -568,25 +577,35 @@ class Ventana:
 
 
     def usuarioExistente(self,nombre,valor):
+
         direccion  = f'{self.path_desktop}/Fotos2'
         if not os.path.exists(direccion):
             return False
 
 
         #print(nombre)
+
         etiquetas = os.listdir(direccion)
         if valor:
-            if nombre in etiquetas:
+            if nombre[0].get() in etiquetas:
                 tkinter.messagebox.showinfo("Mensaje:","¡El usuario ya existe!")
                 return True
-            elif nombre == '':
+            elif nombre[0].get() == '':
                 tkinter.messagebox.showinfo("Mensaje:","¡Primero ingresa un nombre!")
                 return True
+            elif len(list(filter(lambda x: x.get() == '',nombre ))) >= 1:
+                tkinter.messagebox.showinfo("Mensaje:","¡Llena todos los campos!")
+                return True
+
             else:
                 return False
         else:
             if nombre in etiquetas:
+                self.dataUser = self.guardarDB.consulta(nombre)
+                self.dataUser.append(nombre)
+
                 return False
+
             else:
                 tkinter.messagebox.showinfo("Mensaje:","¡No existe el Usuario!")
 
@@ -645,7 +664,7 @@ class Ventana:
         #result = self.nombre.get()
         btn1_mostrar = customtkinter.CTkButton(self.tercer,
         text=" Reconocer",
-        command = lambda:self.reconocerxfat32(pb3.Reconocer(self.nombre1.get(),self.camaraCambio.get())) if
+        command = lambda:self.reconocerxfat32(pb3.Reconocer(self.dataUser,self.camaraCambio.get())) if
         (self.usuarioExistente(self.nombre1.get(),False) == False)
         else 1)
         btn1_mostrar.grid(
@@ -682,7 +701,9 @@ class Ventana:
         )
 
     def reconocerxfat32(self,clase):#self.variable  = True
+
         self.variable = True
+
         #recon = pb3.Reconocer(nombre)
         self.objeto = clase
         #self.ven.geometry('720x500')
@@ -844,7 +865,7 @@ class Ventana:
         if self.variable != True:
             frame,con,cap = self.objeto.VideoCaptura()
             if cap  != False:
-                if con != 25:
+                if con != 250:
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     img = Image.fromarray(frame)
                     imgtk = ImageTk.PhotoImage(image=img)
