@@ -94,7 +94,7 @@ class DataBase:
                             #Almacenar nuestras imagenes
                             cv2.imwrite(self.carpeta + "/rostro_{}.jpg".format(self.cont), cara)
                             self.cont = self.cont + 1
-                            
+
                         except:
                             pass
                 else:

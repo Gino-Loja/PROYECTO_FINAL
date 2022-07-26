@@ -136,6 +136,7 @@ class Ventana:
 
     ANCHO = 710
     ALTO = 690
+    TL = 14
     def __init__(self,ini):
 
         self.ven = ini
@@ -182,14 +183,14 @@ class Ventana:
         self.seis = Frame(self.ven,bg="sky blue")
         self.seis.place(relwidth = 1, relheight = 1)
 
-        R1 = Radiobutton(self.seis, text="Camara interna",font = 'Fixedsys',
+        R1 = Radiobutton(self.seis,text_font = (self.TL), text="Camara interna",font = 'Fixedsys',
         bg="sky blue",
         activebackground ="sky blue",
         variable=self.camaraCambio,
         value=0)
         R1.grid( padx = 200,row = 0,column = 0,pady = 50)
 
-        R2 = Radiobutton(self.seis, text="Camara externa",font = 'Fixedsys',
+        R2 = Radiobutton(self.seis, text_font = (self.TL),text="Camara externa",
         bg="sky blue",
         activebackground ="sky blue",
         variable=self.camaraCambio,
@@ -226,7 +227,7 @@ class Ventana:
         frameHijo.rowconfigure((0,1,2), weight=1)
         frameHijo.columnconfigure((0), weight=1)
 
-        txt = customtkinter.CTkLabel(self.cero,
+        txt = customtkinter.CTkLabel(self.cero,text_font = (self.TL),
         text= 'SISTEMA DE RECOCIMIENTO\n FACIAL Y DETECCION DE MASCARILLAS'
         ).grid(
         row=0,
@@ -236,15 +237,15 @@ class Ventana:
         padx=5,
         pady=10)
 
-        txt2 = customtkinter.CTkLabel(frameHijo,
+        txt2 = customtkinter.CTkLabel(frameHijo,text_font = (self.TL),
         text = "Habilitar camara:").grid(column = 0,
         padx=5,
         pady=10,
         row = 0)
 
-        radiobutton_1 = customtkinter.CTkRadioButton(master=frameHijo, text="Interna",
+        radiobutton_1 = customtkinter.CTkRadioButton(master=frameHijo, text_font = (self.TL),text="Interna",
         variable= self.camaraCambio, value=0)
-        radiobutton_2 = customtkinter.CTkRadioButton(master=frameHijo, text="Externa",
+        radiobutton_2 = customtkinter.CTkRadioButton(master=frameHijo,text_font = (self.TL), text="Externa",
         variable= self.camaraCambio, value=1)
         radiobutton_1.grid(column = 0, row = 1,
         padx=5,
@@ -263,11 +264,13 @@ class Ventana:
 
     def maximizar(self,a):
 
+
         if self.ven.state() != "zoomed":
             self.listaframe.append(a)
             c = len(self.listaframe)
-            self.mini.set(c)
-            #print(self.mini.get())
+            if c %  2 == 0:
+                self.mini.set(c)
+
 
         if self.mini.get() %  2 == 0:
 
@@ -277,7 +280,7 @@ class Ventana:
                 self.listaframe = []
 
 
-        if len(self.listaframe) > 100:
+        if len(self.listaframe) > 101:
             self.listaframe = []
 
 
@@ -314,14 +317,14 @@ class Ventana:
 
         #self.cero.config(bg="blue violet")
         textMenu = customtkinter.CTkLabel(master=self.frameMenu,
-        text = 'Menu',
+        text_font = (self.TL),text = 'Menu',
         fg_color=("white", "gray1"))
         textMenu.place(
         relx=0.5, rely=0.2,
         anchor = CENTER
         )
 
-        btn1_mostrar = customtkinter.CTkButton(self.frameMenu,
+        btn1_mostrar = customtkinter.CTkButton(self.frameMenu,text_font = (self.TL),
         text="Agregar Usuario",
         fg_color=("gray75", "gray30"),
         command = lambda:self.asignarNombre())
@@ -333,7 +336,7 @@ class Ventana:
         #j
         #############################################
         direccion = f'{self.path_desktop}/Fotos2'
-        btn2_eliminar = customtkinter.CTkButton(self.frameMenu,
+        btn2_eliminar = customtkinter.CTkButton(self.frameMenu,text_font = (self.TL),
         text="Reconocer",
         fg_color=("gray75", "gray30"),
         command = lambda:self.reconocerNombre() if os.path.exists(direccion) else
@@ -345,7 +348,7 @@ class Ventana:
 
         self.switch_2 = customtkinter.CTkSwitch(master=self.frameMenu,
 
-                                                text="Dark Mode",
+                                                text="Dark Mode",text_font = (self.TL),
                                                 command=self.change_mode)
         self.switch_2.place(
         relx=0.5, rely=0.93,
@@ -400,7 +403,7 @@ class Ventana:
         column=0,
         sticky='sne'
         ,pady = 15)
-        self.listbox = Listbox(frame, yscrollcommand=scrollbar.set,height = 5)
+        self.listbox = Listbox(frame,font=(13), yscrollcommand=scrollbar.set,height = 5)
         for i in lista:
             if i != 'DatosModelos':
                 self.listbox.insert("end", str(i))
@@ -435,7 +438,7 @@ class Ventana:
     def barraProgreso(self,frame):
 
         self.mpb = customtkinter.CTkProgressBar(frame,width = 250,height = 13)
-        self.textobar = customtkinter.CTkLabel(frame,text = "" )
+        self.textobar = customtkinter.CTkLabel(frame, text_font = (self.TL),text = "" )
         #self.textobar.grid(column = x, row = y )
         # if pos:
         self.mpb.grid(column = 0, row =2 ,pady = 15,sticky="we",padx = 25)
@@ -468,7 +471,7 @@ class Ventana:
         self.primer.columnconfigure(1, weight=1)
 
         #self.variable = None
-        self.nombre = customtkinter.CTkEntry(self.primer,width=200)
+        self.nombre = customtkinter.CTkEntry(self.primer,width=200,text_font = (self.TL))
         self.nombre.grid(
         row=0,
         column=1,
@@ -477,7 +480,7 @@ class Ventana:
         sticky="we")
 
         self.listaDatos.append(self.nombre)
-        self.codigo = customtkinter.CTkEntry(self.primer,width=200)
+        self.codigo = customtkinter.CTkEntry(self.primer,text_font = (self.TL),width=200)
         self.codigo.grid(
         row=1,
         column=1,
@@ -486,7 +489,7 @@ class Ventana:
         sticky="we")
         self.listaDatos.append(self.codigo)
 
-        self.correo = customtkinter.CTkEntry(self.primer,width=200)
+        self.correo = customtkinter.CTkEntry(self.primer,text_font = (self.TL),width=200)
         self.correo.grid(
         row=2,
         column=1,
@@ -494,7 +497,7 @@ class Ventana:
         pady=15,
         sticky="we")
         self.listaDatos.append(self.correo)
-        self.carr = customtkinter.CTkEntry(self.primer,width=200)
+        self.carr = customtkinter.CTkEntry(self.primer,width=200,text_font = (self.TL))
         self.carr.grid(
         row=3,
         column=1,
@@ -502,7 +505,7 @@ class Ventana:
         pady=15,
         sticky="we")
         self.listaDatos.append(self.carr)
-        self.pao = customtkinter.CTkEntry(self.primer,width=50)
+        self.pao = customtkinter.CTkEntry(self.primer,text_font = (self.TL),width=50)
         self.pao.grid(
         row=4,
         column=1,
@@ -511,7 +514,7 @@ class Ventana:
         sticky="w")
         self.listaDatos.append(self.pao)
         ###################
-        self.txt = customtkinter.CTkLabel(self.primer,text = 'Nombre: ',width = 55)
+        self.txt = customtkinter.CTkLabel(self.primer,text_font = (self.TL),text = 'Nombre: ',width = 55)
         self.txt.grid(
         row=0,
         column=0,
@@ -519,7 +522,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt2 = customtkinter.CTkLabel(self.primer,text = 'Codigo: ',width = 55)
+        txt2 = customtkinter.CTkLabel(self.primer,text_font = (self.TL),text = 'Codigo: ',width = 55)
         txt2.grid(
         row=1,
         column=0,
@@ -527,7 +530,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt3 = customtkinter.CTkLabel(self.primer,text = 'Correo: ',width = 55)
+        txt3 = customtkinter.CTkLabel(self.primer,text_font = (self.TL),text = 'Correo: ',width = 55)
         txt3.grid(
         row=2,
         column=0,
@@ -535,7 +538,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt4 = customtkinter.CTkLabel(self.primer,text = 'Carrera: ',width = 55)
+        txt4 = customtkinter.CTkLabel(self.primer,text_font = (self.TL),text = 'Carrera: ',width = 55)
         txt4.grid(
         row=3,
         column=0,
@@ -543,7 +546,7 @@ class Ventana:
         pady=15,
         sticky="we")
 
-        txt5 = customtkinter.CTkLabel(self.primer,text = 'Pao ',width = 55)
+        txt5 = customtkinter.CTkLabel(self.primer,text_font = (self.TL),text = 'Pao ',width = 55)
         txt5.grid(
         row=4,
         column=0,
@@ -554,7 +557,7 @@ class Ventana:
 
         #result = self.nombre.get()
 
-        self.btn1_mostrar = customtkinter.CTkButton(self.primer,
+        self.btn1_mostrar = customtkinter.CTkButton(self.primer,text_font = (self.TL),
         text="Guardar",
 
         command = lambda:self.agregar(self.nombre.get(),con) if (self.usuarioExistente(self.listaDatos,True) == False)
@@ -565,7 +568,7 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="e")
-        self.inicio_ = customtkinter.CTkButton(self.primer,
+        self.inicio_ = customtkinter.CTkButton(self.primer,text_font = (self.TL),
         text="Inicio",
         command = lambda:self.botones())
         self.inicio_.grid(
@@ -574,7 +577,6 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="n")
-
 
     def usuarioExistente(self,nombre,valor):
 
@@ -620,6 +622,7 @@ class Ventana:
         self.segundo.columnconfigure(0, weight=1)
         btn_tomarMas = customtkinter.CTkButton(master = self.segundo,
         text="tomar fotos",
+        text_font = (self.TL),
         width=150,
         command = lambda:self.agregar(nombre, con))
         btn_tomarMas.grid(
@@ -630,6 +633,7 @@ class Ventana:
         )
 
         txt = customtkinter.CTkLabel(self.segundo,
+        text_font = (self.TL),
         text= 'Coloquese la mascarilla y cuando este listo presione el boton'
         ).grid(
         row=1,
@@ -654,7 +658,7 @@ class Ventana:
         self.scrolbar(self.tercer)
         #self.listbox.bind('<<ListboxSelect>>', self.seleccionar)
         #textExample.insert(0, "Default Text")
-        self.nombre1 = customtkinter.CTkEntry(self.tercer)
+        self.nombre1 = customtkinter.CTkEntry(self.tercer,text_font = (self.TL),)
         self.nombre1.grid(
         row=0,
         column=1,
@@ -663,6 +667,7 @@ class Ventana:
         sticky = 'ew')
         #result = self.nombre.get()
         btn1_mostrar = customtkinter.CTkButton(self.tercer,
+        text_font = (self.TL),
         text=" Reconocer",
         command = lambda:self.reconocerxfat32(pb3.Reconocer(self.dataUser,self.camaraCambio.get())) if
         (self.usuarioExistente(self.nombre1.get(),False) == False)
@@ -674,7 +679,7 @@ class Ventana:
         padx = 15,
         sticky = 'e')
 
-        text3 = customtkinter.CTkLabel(  self.tercer,
+        text3 = customtkinter.CTkLabel(  self.tercer,text_font = (self.TL),
         text = 'Nombre:').grid(
         row=0,
         column=0,
@@ -682,14 +687,14 @@ class Ventana:
         padx = 15
         )
 
-        text2 = customtkinter.CTkLabel(  self.tercer,
+        text2 = customtkinter.CTkLabel(  self.tercer,text_font = (self.TL),
         text = 'Lista de Usuarios').grid(
         row=1,
         column=0,
         pady=15,
         padx = 15
         )# scrolbar
-        inicio_ = customtkinter.CTkButton(self.tercer,
+        inicio_ = customtkinter.CTkButton(self.tercer,text_font = (self.TL),
         text="Inicio",
         command = lambda:self.botones())
         inicio_.grid(
@@ -703,7 +708,7 @@ class Ventana:
     def reconocerxfat32(self,clase):#self.variable  = True
 
         self.variable = True
-
+        self.CAMBIO = False
         #recon = pb3.Reconocer(nombre)
         self.objeto = clase
         #self.ven.geometry('720x500')
@@ -724,15 +729,17 @@ class Ventana:
         self.lmain.grid(column=0, row=0, sticky="nswe", padx=15, pady=15)
 
         if self.variable:
-            self.btnsalir = customtkinter.CTkButton(self.prueba,text = 'salir', command = lambda:self.botones())
+            self.btnsalir = customtkinter.CTkButton(self.prueba,text_font = (self.TL),text = 'salir', command = lambda:self.botones())
             self.btnsalir.grid(
             row=1,
             column=0,
             padx=10,
             pady=10)
+
         self.barraProgreso(self.prueba)
+
         self.show_vid()
-        #self.barraProgreso()
+        #self.barraProgreso(self.prueba)
 
 
 
@@ -763,7 +770,7 @@ class Ventana:
             c = "{0:.0f}".format(((i/7)*100))
             self.textobar['text'] = 'Guardando datos '+c+'%'
             #self.mpb["value"] = i
-            self.mpb.set(0.04*i)
+            self.mpb.set(0.145*i)
 
             #self.prueba2.grid_columnconfigure(0, weight=1)
             self.prueba2.update()
@@ -859,7 +866,6 @@ class Ventana:
     """
     -----------------------------------
     """
-
     def show_vid(self):
 
         if self.variable != True:

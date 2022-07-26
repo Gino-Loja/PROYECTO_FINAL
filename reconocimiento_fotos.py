@@ -119,11 +119,16 @@ class Reconocer:
                                 elif prediccion[0] == 1:
                                     cv2.putText(frame, '{}'.format(self.etiquetas[1]), (xi, yi - 5), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
                                     cv2.rectangle(frame, (xi, yi), (xf, yf), (0,0,255), 2)
-                                cv2.rectangle(frame, (477, 324) ,(623, 470), (0,0,255), 2)
-                                cv2.putText(frame, self.nombre[0], (xi+50, yi), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+
+                                #cv2.rectangle(frame, (477, 324) ,(623, 470), (0,0,255), 2)
+                                #cv2.putText(frame, 'que es ', (xi+50, yi), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[0], (xf+2, yi+10), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[1], (xf+2, yi+30), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[2], (xf+2, yi+60), 1, 1.2, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[3], (xf+2, yi+90), 1, 1.2, (0,0,255), 1, cv2.LINE_AA)
 
 
-                                print((xi, yi), (xf, yf))
+                                #print((xi, yi), (xf, yf))
                         except cv2.error as e:
                             pass
                                 #print(frame.shape)
