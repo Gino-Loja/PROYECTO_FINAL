@@ -137,6 +137,8 @@ class Ventana:
     ANCHO = 710
     ALTO = 690
     TL = 14
+    PATHIMAGES = os.path.dirname(os.path.realpath(__file__))+"\\img\\"
+    image_size = 25
     def __init__(self,ini):
 
         self.ven = ini
@@ -236,9 +238,17 @@ class Ventana:
         sticky="n",
         padx=5,
         pady=10)
+        #settings_image = PhotoImage(self.PATHIMAGES+"chevron-left-16.png")
+        self.settings_image1 = ImageTk.PhotoImage(Image.open(self.PATHIMAGES+"device-camera-video-24.png").resize((self.image_size, self.image_size)))
 
-        txt2 = customtkinter.CTkLabel(frameHijo,text_font = (self.TL),
+
+        txt2 = customtkinter.CTkLabel(frameHijo, text_font = (self.TL),
         text = "Habilitar camara:").grid(column = 0,
+        padx=5,
+        pady=10,
+        row = 0)
+        imge = customtkinter.CTkLabel(frameHijo, image = self.settings_image1 )
+        imge.grid(column = 1,
         padx=5,
         pady=10,
         row = 0)
@@ -356,27 +366,29 @@ class Ventana:
         )
         self.switch_2.select() if self.switch.get() == 1 else self.switch_2.deselect()
 
-        # btn3_mostrarMultiple = customtkinter.CTkButton(self.frameMenu,
-        #  text="Reconocimiento \nMultiple",
-        #  fg_color=("gray75", "gray30"),
-        # command = lambda:self.reconocerMultiple() if os.path.exists(direccion) else
-        # tkinter.messagebox.showinfo("Mensaje:","¡No existe ningun Usuario!"))
-        # btn3_mostrarMultiple.place(
-        # relx=0.5, rely=0.8,
-        # anchor = CENTER
-        # )
 
     def agregar(self,nombre,mascarilla):
         #self.var = False
-        self.controlSalir()
-        self.variable = None
-        Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
-        if len(self.listaDatos)>1:
-            self.guardarDB.guardar(list(map(lambda x : x.get(),self.listaDatos)))
 
-        self.objeto = Video
-        self.botonPrueba()
-        self.listaDatos = []
+        self.variable = None
+        #Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
+        if len(self.listaDatos)>1:
+            a = self.guardarDB.guardar(list(map(lambda x : x.get(),self.listaDatos)))
+            if not a :
+                tkinter.messagebox.showinfo("Mensaje:","¡Tu codigo o correo ya existen en la base de datos!")
+                return
+            else:
+
+                Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
+                self.objeto = Video
+                self.botonPrueba()
+                self.controlSalir()
+                self.listaDatos = []
+
+        else:
+            Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
+            self.objeto = Video
+            self.botonPrueba()
 
     def listaOpciones(self):
 
@@ -456,6 +468,7 @@ class Ventana:
     #=============
     def asignarNombre(self):
         self.captura  = None
+        self.ven.protocol('WM_DELETE_WINDOW',lambda: self.ven.destroy())
         #print(self.switch_2.get(),'fe w')
         self.switch.set(self.switch_2.get())
         self.cero.destroy()
@@ -568,7 +581,12 @@ class Ventana:
         padx=15,
         pady=15,
         sticky="e")
-        self.inicio_ = customtkinter.CTkButton(self.primer,text_font = (self.TL),
+
+
+        settings_image = ImageTk.PhotoImage(Image.open(self.PATHIMAGES+"chevron-left-16.png").resize((self.image_size, self.image_size)))
+        #bell_image = ImageTk.PhotoImage(Image.open(PATH + "/test_images/bell.png").resize((image_size, image_size)))
+
+        self.inicio_ = customtkinter.CTkButton(self.primer,image = settings_image ,text_font = (self.TL),
         text="Inicio",
         command = lambda:self.botones())
         self.inicio_.grid(

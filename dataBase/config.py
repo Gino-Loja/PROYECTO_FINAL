@@ -10,14 +10,18 @@ class DB:
 
     def guardar(self,datos):
         print(datos)
-        insertar = "INSERT INTO estudiantes(nombre,codigo , correo) VALUES (%s, %s,%s);"
-        self.db.execute(insertar, [datos[0],datos[1],datos[2]])
-        insertar1 = "INSERT INTO pao(codigo_es,pao_) VALUES (%s,%s);"
-        self.db.execute(insertar1, [datos[1],datos[4]])
-        insertar2 = "INSERT INTO carrera(codigo_car,carrera_) VALUES (%s,%s);"
-        self.db.execute(insertar2, [datos[1],datos[3]])
-        self.conexion.commit()
-        print('datos guardados con exito')
+        try:
+            insertar = "INSERT INTO estudiantes(nombre,codigo , correo) VALUES (%s, %s,%s);"
+            self.db.execute(insertar, [datos[0],datos[1],datos[2]])
+            insertar1 = "INSERT INTO pao(codigo_es,pao_) VALUES (%s,%s);"
+            self.db.execute(insertar1, [datos[1],datos[4]])
+            insertar2 = "INSERT INTO carrera(codigo_car,carrera_) VALUES (%s,%s);"
+            self.db.execute(insertar2, [datos[1],datos[3]])
+            self.conexion.commit()
+            print('datos guardados con exito')
+            return True
+        except:
+            return False
 
     def cerrarConexion(self):
         self.conexion.close()
