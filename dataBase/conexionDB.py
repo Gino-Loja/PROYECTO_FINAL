@@ -3,7 +3,7 @@ import psycopg2 as pg
 
 try:
     conexion = pg.connect(
-    database = "sistema_RF",
+    database = "sistema_RF3",
     user = "gino",
     password = "hola",
     host = "localhost",

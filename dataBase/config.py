@@ -20,7 +20,8 @@ class DB:
             self.conexion.commit()
             print('datos guardados con exito')
             return True
-        except:
+        except  :
+            self.conexion.commit()
             return False
 
     def cerrarConexion(self):
