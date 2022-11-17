@@ -1,5 +1,5 @@
 
-
+CREATE DATABASE SISTEMA_RF;
 CREATE TABLE IF NOT EXISTS estudiantes
 (
     codigo varchar(15) NOT NULL,

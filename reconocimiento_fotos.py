@@ -6,7 +6,11 @@ import mediapipe as mp
 
 class Reconocer:
     """docstring fs Reconocer."""
-
+    TAMANIO_LETRA = 1
+    FUENTE = 4
+    RELLENO_LETRAS = 25
+    C_C_L_CON_M = (28,156,2)
+    C_C_L_SIN_M = (78,78,255)
     def __init__(self,nombre,camara = 0):
 
         #----importamos los nombres de las carpetas----
@@ -26,9 +30,6 @@ class Reconocer:
         self.dibujo = mp.solutions.drawing_utils #funcion de Dibujo
         self.cap = None
         self.si = self.encenderCamara()
-
-
-
 
         #----Realizar la VideoCaptura----
     def encenderCamara(self):
@@ -105,27 +106,37 @@ class Reconocer:
                             #si existe un rostro desconocido le agregara la etiqueta desconocido
                             #porque esta fuera del valor de confianza
                             #print(prediccion[1])
-                            if prediccion[1] > 60:
+                            if prediccion[1] > 65:
 
-                                cv2.putText(frame, 'desconocido', (xi, yi - 5), 1, 1.3, (255,0,0), 1, cv2.LINE_AA)
+                                cv2.putText(frame, 'desconocido', (xi-30, yi - 5), self.FUENTE, 1.2, (0,0,255), 1, self.RELLENO_LETRAS)
                                 cv2.rectangle(frame, (xi, yi), (xf, yf), (0,0,255), 2)
 
                             else:
                                 #mostramos si el rostro tiene o no mascarilla
+                                mas = 70
                                 if prediccion[0] == 0:
-                                    cv2.putText(frame, '{}'.format(self.etiquetas[0]), (xi, yi - 5), 1, 1.3, (255,0,0), 1, cv2.LINE_AA)
-                                    cv2.rectangle(frame, (xi, yi), (xf, yf), (255,0,0), 2)
+                                    cv2.putText(frame, '{}'.format(self.etiquetas[0]),
+                                     (xi-mas, yi - 5), 
+                                     self.FUENTE, 
+                                     self.TAMANIO_LETRA, 
+                                     self.C_C_L_CON_M, 1, 
+                                     self.RELLENO_LETRAS)
+                                    cv2.rectangle(frame, (xi, yi), (xf, yf), self.C_C_L_CON_M, 2)
 
                                 elif prediccion[0] == 1:
-                                    cv2.putText(frame, '{}'.format(self.etiquetas[1]), (xi, yi - 5), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
-                                    cv2.rectangle(frame, (xi, yi), (xf, yf), (0,0,255), 2)
+                                    cv2.putText(frame, '{}'.format(self.etiquetas[1]), 
+                                    (xi-mas, yi - 5),
+                                     self.FUENTE, self.TAMANIO_LETRA, 
+                                     self.C_C_L_SIN_M, 1, 
+                                     self.RELLENO_LETRAS)
+                                    cv2.rectangle(frame, (xi, yi), (xf, yf), self.C_C_L_SIN_M, 2)
 
                                 #cv2.rectangle(frame, (477, 324) ,(623, 470), (0,0,255), 2)
                                 #cv2.putText(frame, 'que es ', (xi+50, yi), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
-                                cv2.putText(frame, self.nombre[0], (xf+2, yi+10), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
-                                cv2.putText(frame, self.nombre[1], (xf+2, yi+30), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
-                                cv2.putText(frame, self.nombre[2], (xf+2, yi+60), 1, 1.2, (0,0,255), 1, cv2.LINE_AA)
-                                cv2.putText(frame, self.nombre[3], (xf+2, yi+90), 1, 1.2, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[0], (xf+8, yi+25), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+                                #cv2.putText(frame, self.nombre[1], (xf+2, yi+30), 1, 1.3, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[2], (xf+8, yi+50), 1, 1.2, (0,0,255), 1, cv2.LINE_AA)
+                                cv2.putText(frame, self.nombre[3], (xf+8, yi+75), 1, 1.2, (0,0,255), 1, cv2.LINE_AA)
 
 
                                 #print((xi, yi), (xf, yf))

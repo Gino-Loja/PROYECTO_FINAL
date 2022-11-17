@@ -241,7 +241,7 @@ class Ventana:
 
 
         txt = customtkinter.CTkLabel(self.cero,text_font = ("",self.TL),
-        text= 'SISTEMA DE RECOCIMIENTO\n \nFACIAL Y DETECCION DE MASCARILLAS'
+        text= 'SISTEMA DE RECOCIMIENTO\n \nFACIAL Y DETECCIÓN DE MASCARILLAS'
         ).grid(
         row=0,
         column=0,
@@ -267,7 +267,7 @@ class Ventana:
         imge2 = customtkinter.CTkLabel(frameHijo, image = self.settings_image2 )
         imge2.grid(column = 1,
         row = 2)
-
+        0,
         radiobutton_1 = customtkinter.CTkRadioButton(master=frameHijo, text_font = ("",self.TL),text="Interna",
         variable= self.camaraCambio, value=0)
         radiobutton_2 = customtkinter.CTkRadioButton(master=frameHijo,text_font = ("",self.TL), text="Externa",
@@ -395,7 +395,7 @@ class Ventana:
                 tkinter.messagebox.showinfo("Mensaje:","!El codigo ya existe en la base de datos!")
                 return
             else:
-                
+
                 Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
                 self.objeto = Video
                 self.botonPrueba()
@@ -403,7 +403,7 @@ class Ventana:
                 self.listaDatos = []
 
         else:
-            
+
             Video = pb.DataBase(nombre,mascarilla,self.camaraCambio.get())
             self.objeto = Video
             self.botonPrueba()
@@ -473,7 +473,7 @@ class Ventana:
             # if pos:
             self.mpb.grid(column = 0, row =2 ,pady = 15,sticky="we" ,padx=35)
             self.textobar.grid(column = 0, row = 0 )
-            
+
         else:
 
             self.mpb = customtkinter.CTkProgressBar(frame,width = 250,height = 13)
@@ -482,7 +482,7 @@ class Ventana:
             # if pos:
             self.mpb.grid(column = 0, row =2 ,pady = 15,sticky="we",padx = 25)
             self.textobar.grid(column = 0, row = 1 )
- 
+
 
 
     def asignarNombre(self):
@@ -702,7 +702,7 @@ class Ventana:
         self.cero.destroy()
         self.frameMenu.destroy()
         self.FRAME3.set(True)
-        
+
 
         self.tercer = customtkinter.CTkFrame(self.ven)
         self.tercer.grid(row=0, column=1, sticky="nswe", padx=20, pady=20)
@@ -799,8 +799,8 @@ class Ventana:
         self.imageCamera = ImageTk.PhotoImage(Image.open(self.PATHIMAGES+"device-camera-16.png").resize((25, 25)))
         self.imgcam = customtkinter.CTkLabel(self.prueba, image = self.imageCamera )
         self.imgcam.place(relx=0.58, rely=0.869,relwidth=0.09, relheight=0.09)
-  
- 
+
+
 
         if self.variable:
             self.btnsalir = customtkinter.CTkButton(self.prueba,text_font = ("",self.TL),text = 'salir', command = lambda:self.botones())
@@ -810,9 +810,9 @@ class Ventana:
             padx=10,
             pady=10)
             self.imgcam.destroy()
-            
-           
-        
+
+
+
 
         self.barraProgreso(self.prueba, False)
 
@@ -834,7 +834,7 @@ class Ventana:
         self.imagedb = ImageTk.PhotoImage(Image.open(self.PATHIMAGES+"database-24.png").resize((120, 120)))
         imgcam = customtkinter.CTkLabel(self.prueba2, image = self.imagedb )
         imgcam.grid(column= 0, row = 1 )
-        
+
 
         self.controlSalir()
         #self.btn_4.destroy()

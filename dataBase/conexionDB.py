@@ -2,13 +2,14 @@
 import psycopg2 as pg
 
 try:
-    conexion = pg.connect(
-    database = "sistema_RF3",
-    user = "gino",
-    password = "hola",
-    host = "localhost",
-    port = 5432
-    )
-    print('conexion exitosa')
+     conexion = pg.connect(
+     database = "sistema_RF3",
+     user = "gino",
+     password = "hola",
+     host = "localhost",
+     port = 5432
+     )
+     print('conexion exitosa')
 except Exception as e:
-    print("fallo al conectarse con la base de datos",e)
+     print("fallo al conectarse con la base de datos",e)
+
